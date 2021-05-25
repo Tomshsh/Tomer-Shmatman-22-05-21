@@ -1,6 +1,7 @@
 import { Divider, makeStyles, Typography } from '@material-ui/core'
 import interCloudsDay from '../../../../icons/IntermittentClouds(day).4a7ba1cb.svg'
 import React from 'react'
+import SearchField from '../../../components/searchField/searchField'
 
 const useStyles = makeStyles(theme => ({
     current: {
@@ -24,7 +25,8 @@ const CurrentWeather = () => {
     return (
         <div className={classes.current}>
             <Typography variant="caption">current weather</Typography>
-            <Typography variant="h4" style={{ marginTop: 20 }}>Tel Aviv</Typography>
+            {/* <Typography variant="h4" style={{ marginTop: 20 }}>Tel Aviv</Typography> */}
+            <SearchField/>
             <Typography variant="subtitle2" style={{ marginTop: 20 }}>20:13 / SUNDAY,MAY 23</Typography>
             <Divider style={{ margin: '20px 0' }} />
             <div className={classes.tempDescription}>

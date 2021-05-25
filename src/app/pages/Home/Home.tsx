@@ -1,7 +1,8 @@
-import { Container, createMuiTheme, makeStyles, ThemeProvider, Typography } from '@material-ui/core';
+import { Container, createMuiTheme, InputAdornment, makeStyles, TextField, ThemeProvider, Typography } from '@material-ui/core';
 import React from 'react';
 import CurrentWeather from './CurrentWeather/CurrentWeather';
 import NextDays from './NextDays/NextDays';
+import {Search} from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
   weatherHead: {
@@ -16,8 +17,8 @@ const useStyles = makeStyles(theme => ({
   weatherHeadContainer: {
     position: 'relative'
   },
-  forecastContainer:{
-    marginTop:50
+  forecastContainer: {
+    marginTop: 50
   }
 }))
 
@@ -32,7 +33,7 @@ const Home: React.FC = () => {
         <CurrentWeather />
       </Container>
       <Container className={classes.forecastContainer}>
-        <Typography variant="h5" style={{paddingBottom:30, fontWeight:'bold'}}>Next 5 Days</Typography>
+        <Typography variant="h5" style={{ paddingBottom: 30, fontWeight: 'bold' }}>Next 5 Days</Typography>
         <NextDays />
       </Container>
     </div >
