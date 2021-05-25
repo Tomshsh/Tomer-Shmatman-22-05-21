@@ -7,9 +7,20 @@ import Home from './app/pages/Home/Home';
 import NotFound from './app/pages/NotFound/NotFound';
 
 let theme = createMuiTheme({
-  palette:{
-    primary:{main:'#ffffff'}
-  }
+  palette: {
+    primary: { main: '#ffffff' },
+    background: { default: '#f8f9fc' },
+    text:{secondary:'rgb(0,0,0,0.4)'}
+    //divider: '#addced'
+  },
+  typography: {
+    // allVariants: { color: "#ffffff" },
+    'subtitle1': { fontSize: 17, color: 'rgb(0,0,0,0.8)' },
+    'subtitle2': { color: 'rgb(0,0,0,0.8)' },
+    caption: { fontSize: 15, color: 'rgb(0,0,0,0.5)', fontWeight: 600, textTransform: 'uppercase' },
+    h1: { fontSize: 80 },
+
+  },
 })
 
 theme = responsiveFontSizes(theme)

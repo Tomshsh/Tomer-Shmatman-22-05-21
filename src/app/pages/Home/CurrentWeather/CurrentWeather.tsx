@@ -6,7 +6,6 @@ const useStyles = makeStyles(theme => ({
     current: {
         display: 'flex',
         flexDirection: 'column',
-        flex: '0 1 390px',
 
         '& h4, h2': {
             fontWeight: 'bold'
@@ -24,8 +23,9 @@ const CurrentWeather = () => {
 
     return (
         <div className={classes.current}>
-            <Typography variant="h4">Tel Aviv</Typography>
-            <Typography variant="caption" style={{ marginTop: 20 }}>20:13 / SUNDAY,MAY 23</Typography>
+            <Typography variant="caption">current weather</Typography>
+            <Typography variant="h4" style={{ marginTop: 20 }}>Tel Aviv</Typography>
+            <Typography variant="subtitle2" style={{ marginTop: 20 }}>20:13 / SUNDAY,MAY 23</Typography>
             <Divider style={{ margin: '20px 0' }} />
             <div className={classes.tempDescription}>
                 <Typography variant="h1">36°</Typography>
@@ -33,7 +33,6 @@ const CurrentWeather = () => {
                 <img src={interCloudsDay} alt="" style={{marginRight:'20px'}} />
                 <Typography variant="subtitle1">Intermittent Clouds</Typography>
             </div>
-
         </div>
     )
 }
