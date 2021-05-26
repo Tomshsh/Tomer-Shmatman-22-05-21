@@ -25,7 +25,6 @@ const CurrentWeather = () => {
     return (
         <div className={classes.current}>
             <Typography variant="caption">current weather</Typography>
-            {/* <Typography variant="h4" style={{ marginTop: 20 }}>Tel Aviv</Typography> */}
             <SearchField/>
             <Typography variant="subtitle2" style={{ marginTop: 20 }}>20:13 / SUNDAY,MAY 23</Typography>
             <Divider style={{ margin: '20px 0' }} />
