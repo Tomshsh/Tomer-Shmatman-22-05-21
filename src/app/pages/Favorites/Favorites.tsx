@@ -1,41 +1,14 @@
-import { Container, Grid, makeStyles, Typography } from '@material-ui/core';
-import React from 'react';
-import icon from '../../../icons/MostlyCloudy.svg'
+import { Button, Container, Grid, makeStyles } from '@material-ui/core';
+import React, { useEffect, useRef, useState } from 'react';
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog';
+import Favorite from './Favorite'
+import {Delete} from '@material-ui/icons'
+
 
 const useStyles = makeStyles(theme => ({
   favorites: {
     padding: '40px 0'
   },
-  favoritesContainer: {},
-  favoriteItem: {
-    borderRadius: 10,
-    height: 300,
-    maxWidth: 600,
-    boxShadow: "0 20px 43px hsla(0,0%,39.2%,0.05)",
-    backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    margin: 30,
-    padding: theme.spacing(4),
-    [theme.breakpoints.down("sm")]: {
-      margin: '30px auto',
-    }
-  },
-  description: {
-    flex: '0 0 50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  },
-  icons: {
-    flex: '0 0 50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems:'right',
-
-    '& img':{height:'50%'}
-  }
-
 }))
 
 const favorites = [
@@ -71,27 +44,54 @@ const Favorites: React.FC = () => {
 
   const classes = useStyles()
 
+  const [favToDelete, setFavToDelete] = useState<number | null>(null)
+  const [showDialog, setDialog] = useState(false)
+
+  useEffect(() => {
+    if (favToDelete !== null) {
+      setDialog(true)
+    }
+  }, [favToDelete])
+
+  useEffect(() => {
+    if (!showDialog) {
+      // delaying this state change to prevent the dialog's title from changing briefly before it closes. 
+      setTimeout(() => { setFavToDelete(null) }, 500)
+
+    }
+  }, [showDialog])
+
+  const handleDelete = (i: number) => { setFavToDelete(i) }
+
+  const closeDialog = () => { setDialog(false) }
+
+  const deleteFavorite = (i: number) => {
+    closeDialog()
+  }
+
   return (
     <div className={classes.favorites}>
-      <Container className={classes.favoritesContainer}>
+      <Container>
+        <ConfirmDialog
+          open={showDialog}
+          title={`Delete ${favorites[favToDelete || 0].city} from favorites?`}
+          onClose={closeDialog}
+          actions={<>
+            <Button variant="contained" onClick={closeDialog}>Cancel</Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<Delete/>}
+              onClick={() => {favToDelete && deleteFavorite(favToDelete)}}
+            >
+              Delete
+      </Button>
+          </>}
+        />
         <Grid container justify="center">
           {favorites.map((f, i) => (
-            <Grid item xs={12} md={6} >
-              <div className={classes.favoriteItem}>
-                <div className={classes.description}>
-                  <div>
-                    <Typography variant="h4">{f.city}</Typography>
-                    <Typography variant="caption">{f.lastUpdated}</Typography>
-                  </div>
-                  <div>
-                    <Typography variant="h3">{f.temp}°</Typography>
-                    <Typography variant="caption">{f.description}</Typography>
-                  </div>
-                </div>
-                <div className={classes.icons}>
-                  <img src={icon} alt="" />
-                </div>
-              </div>
+            <Grid item xs={12} md={6} key={i} >
+              <Favorite favorite={f} iterator={i} handleDelete={handleDelete} />
             </Grid>
           ))}
         </Grid>
