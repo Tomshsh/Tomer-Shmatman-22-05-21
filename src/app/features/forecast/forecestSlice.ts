@@ -20,7 +20,7 @@ const forecastSlice = createSlice({
 export const { forecastAdded } = forecastSlice.actions
 
 export const getForecast = createAsyncThunk('currentWeather/getForecast', async (locationKey: string) => {
-    const response = await client.getForecest(locationKey)
+    const response = await client.getForecast(locationKey)
     return response.data
 })
 

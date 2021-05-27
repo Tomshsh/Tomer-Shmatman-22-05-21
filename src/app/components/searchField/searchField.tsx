@@ -1,5 +1,6 @@
 import { IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
 import { Search } from '@material-ui/icons'
+import { AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -9,20 +10,40 @@ const useStyles = makeStyles(theme => ({
         width: 200,
         display: 'flex',
         justifyContent: 'space-between',
-        transition: 'border-color 300ms ,width 0.5s',
+        // transition: 'border-color 300ms ,width 0.5s',
         // borderColor: theme.palette.text.secondary
         '&:hover': {
             borderColor: theme.palette.info.main,
             cursor: 'text'
         },
     },
-    active: { width: 300 }
+    // active: { width: 300 }
 }))
 
-const SearchField = (props: any) => {
+
+type SelectOption = {
+    title: string
+    value: any
+}
+
+type Props = {
+    onChange: (text: string) => void
+    searchFunction: () => Promise<SelectOption[]> | SelectOption[]
+}
+
+const SearchField: React.FC<Props> = (props) => {
+    const { searchFunction, onChange } = props
 
     const [inFocus, setFocus] = useState(false)
     const [value, setValue] = useState("Tel Aviv")
+    const [options, setOptions] = useState<SelectOption[]>()
+
+    const search = () => {
+        Promise.resolve(searchFunction())
+            .then((options) => {
+                setOptions(options)
+            },(error) => {})
+    }
 
     const inputRef = useRef<HTMLInputElement>()
 
@@ -34,19 +55,26 @@ const SearchField = (props: any) => {
         }
     }, [inFocus])
 
+    useEffect(() => {
+        if(options){
+
+        }
+    }, [options])
+
     return (
-        <div onClick={() => { setFocus(true) }} {...props} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
+        <div onClick={() => { setFocus(true) }} onBlur={() => { setFocus(false) }} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
             {
                 inFocus ?
                     <InputBase
                         ref={inputRef}
-                        onBlur={() => { setFocus(false) }}
+                        
+                        onChange={(e) => onChange(e.target.value)}
                     /> :
                     <Typography variant="h4">{value}</Typography>
 
             }
-            <IconButton type="submit" aria-label="search">
+            <IconButton onClick={search} aria-label="search">
                 <Search />
             </IconButton>
         </div>
