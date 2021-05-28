@@ -97,7 +97,7 @@ const SearchField: React.FC<Props> = (props) => {
             </div>
             <div hidden={!inFocus} className={classes.resultsPanelWrap}>
                 <div className={classes.resultsPanel}>
-                    {options=> }
+                    {options?.map(o => ())}
                 </div>
             </div>
         </>
