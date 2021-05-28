@@ -27,7 +27,7 @@ type SelectOption = {
 
 type Props = {
     options: SelectOption[]
-    setValue: (option: SelectOption) => void
+    setValue: (newValue: SelectOption) => void
 }
 
 const ResultPanel: React.FC<Props> = (props) => {

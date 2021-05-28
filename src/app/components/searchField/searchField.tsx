@@ -69,6 +69,12 @@ const SearchField: React.FC<Props> = (props) => {
         }
     }
 
+    const handleValueChange = (newValue: SelectOption) => {
+        setValue(newValue)
+        setFocus(false)
+        setOptions([])
+    }
+
     useEffect(() => {
         if (inFocus) { inputRef.current?.click() }
     }, [inFocus])
@@ -93,7 +99,7 @@ const SearchField: React.FC<Props> = (props) => {
                         </IconButton> : <CircularProgress />
                 }
             </div>
-            <ResultPanel options={options} setValue={setValue}/>
+            <ResultPanel options={options} setValue={handleValueChange}/>
             
         </>
     )
