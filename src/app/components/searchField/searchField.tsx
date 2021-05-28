@@ -1,8 +1,9 @@
-import { Button, IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Collapse, IconButton, InputBase, List, ListItem, ListItemText, makeStyles, Typography } from "@material-ui/core";
 import { Search } from '@material-ui/icons'
 import { Autocomplete } from "@material-ui/lab";
 import { AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
+import ResultPanel from "./ResultPanel";
 
 const useStyles = makeStyles(theme => ({
     inputWrap: {
@@ -20,16 +21,7 @@ const useStyles = makeStyles(theme => ({
     active: {
         width: 300
     },
-    resultsPanelWrap: {
-        position: "relative",
-        width: 300
-    },
-    resultsPanel: {
-        position: "absolute",
-        width: "inherit",
-        maxHeight: 300,
-        overflowY: "scroll",
-    }
+    
 }))
 
 
@@ -47,14 +39,17 @@ const SearchField: React.FC<Props> = (props) => {
     const { searchFunction, onChange } = props
 
     const [inFocus, setFocus] = useState(false)
-    const [value, setValue] = useState("Tel Aviv")
-    const [options, setOptions] = useState<SelectOption[]>()
+    const [value, setValue] = useState<SelectOption>({title:"Tel Aviv", value:{}})
+    const [options, setOptions] = useState<SelectOption[]>([])
+    const [loading, setLoading] = useState(false)
 
     const search = () => {
-        // Promise.resolve(searchFunction())
-        //     .then((options) => {
-        //         setOptions(options)
-        //     }, (error) => { })
+        setLoading(true)
+        Promise.resolve(searchFunction())
+            .then((options) => {
+                setOptions(options)
+                setLoading(false)
+            }, (error) => { })
     }
 
     const inputRef = useRef<HTMLInputElement>()
@@ -88,18 +83,18 @@ const SearchField: React.FC<Props> = (props) => {
                         < InputBase
                             ref={inputRef}
                             onChange={(e) => { onChange(e.target.value) }}
-                        /> : <Typography variant="h4">{value}</Typography>
+                        /> : <Typography variant="h4">{value.title}</Typography>
                 }
-                <IconButton
-                    onClick={() => { search() }} aria-label="search">
-                    <Search />
-                </IconButton>
+                {
+                    !loading ?
+                        <IconButton
+                            onClick={() => { search() }} aria-label="search">
+                            <Search />
+                        </IconButton> : <CircularProgress />
+                }
             </div>
-            <div hidden={!inFocus} className={classes.resultsPanelWrap}>
-                <div className={classes.resultsPanel}>
-                    {options?.map(o => ())}
-                </div>
-            </div>
+            <ResultPanel options={options} setValue={setValue}/>
+            
         </>
     )
 }
