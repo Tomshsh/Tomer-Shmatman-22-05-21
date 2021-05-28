@@ -1,6 +1,6 @@
 import { Divider, makeStyles, Typography } from '@material-ui/core'
 import interCloudsDay from '../../../../icons/IntermittentClouds(day).4a7ba1cb.svg'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchField from '../../../components/searchField/searchField'
 import client from '../../../../api/api'
 

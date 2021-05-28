@@ -1,5 +1,6 @@
-import { IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
+import { Button, IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
 import { Search } from '@material-ui/icons'
+import { Autocomplete } from "@material-ui/lab";
 import { AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
 
@@ -10,14 +11,25 @@ const useStyles = makeStyles(theme => ({
         width: 200,
         display: 'flex',
         justifyContent: 'space-between',
-        // transition: 'border-color 300ms ,width 0.5s',
-        // borderColor: theme.palette.text.secondary
+        transition: 'border-color 300ms ,width 0.5s',
         '&:hover': {
             borderColor: theme.palette.info.main,
             cursor: 'text'
         },
     },
-    // active: { width: 300 }
+    active: {
+        width: 300
+    },
+    resultsPanelWrap: {
+        position: "relative",
+        width: 300
+    },
+    resultsPanel: {
+        position: "absolute",
+        width: "inherit",
+        maxHeight: 300,
+        overflowY: "scroll",
+    }
 }))
 
 
@@ -39,45 +51,56 @@ const SearchField: React.FC<Props> = (props) => {
     const [options, setOptions] = useState<SelectOption[]>()
 
     const search = () => {
-        Promise.resolve(searchFunction())
-            .then((options) => {
-                setOptions(options)
-            },(error) => {})
+        // Promise.resolve(searchFunction())
+        //     .then((options) => {
+        //         setOptions(options)
+        //     }, (error) => { })
     }
 
     const inputRef = useRef<HTMLInputElement>()
 
     const classes = useStyles()
 
-    useEffect(() => {
-        if (inFocus) {
-            inputRef.current?.click()
+    const handleFocus: React.MouseEventHandler = (e) => {
+        if (!inFocus) {
+            setFocus(true)
         }
+    }
+
+    const handleBlur: React.FocusEventHandler = e => {
+        //@ts-ignore
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            setFocus(false)
+        }
+    }
+
+    useEffect(() => {
+        if (inFocus) { inputRef.current?.click() }
     }, [inFocus])
 
-    useEffect(() => {
-        if(options){
-
-        }
-    }, [options])
-
     return (
-        <div onClick={() => { setFocus(true) }} onBlur={() => { setFocus(false) }} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
-            {
-                inFocus ?
-                    <InputBase
-                        ref={inputRef}
-                        
-                        onChange={(e) => onChange(e.target.value)}
-                    /> :
-                    <Typography variant="h4">{value}</Typography>
+        <>
+            <div onClick={handleFocus} onBlur={handleBlur} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
-            }
-            <IconButton onClick={search} aria-label="search">
-                <Search />
-            </IconButton>
-        </div>
+                {
+                    inFocus ?
+                        < InputBase
+                            ref={inputRef}
+                            onChange={(e) => { onChange(e.target.value) }}
+                        /> : <Typography variant="h4">{value}</Typography>
+                }
+                <IconButton
+                    onClick={() => { search() }} aria-label="search">
+                    <Search />
+                </IconButton>
+            </div>
+            <div hidden={!inFocus} className={classes.resultsPanelWrap}>
+                <div className={classes.resultsPanel}>
+                    {options=> }
+                </div>
+            </div>
+        </>
     )
 }
 
