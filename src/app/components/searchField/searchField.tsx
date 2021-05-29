@@ -2,7 +2,7 @@ import { Button, CircularProgress, Collapse, IconButton, InputBase, List, ListIt
 import { Search } from '@material-ui/icons'
 import { Autocomplete } from "@material-ui/lab";
 import { AxiosResponse } from "axios";
-import { useEffect, useRef, useState } from "react";
+import { FocusEventHandler, MouseEventHandler, useEffect, useRef, useState } from "react";
 import ResultPanel from "./ResultPanel";
 
 const useStyles = makeStyles(theme => ({
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     active: {
         width: 300
     },
-    
+
 }))
 
 
@@ -39,17 +39,23 @@ const SearchField: React.FC<Props> = (props) => {
     const { searchFunction, onChange } = props
 
     const [inFocus, setFocus] = useState(false)
-    const [value, setValue] = useState<SelectOption>({title:"Tel Aviv", value:{}})
+    const [value, setValue] = useState<SelectOption>({ title: "Tel Aviv", value: {} })
     const [options, setOptions] = useState<SelectOption[]>([])
     const [loading, setLoading] = useState(false)
 
     const search = () => {
-        setLoading(true)
-        Promise.resolve(searchFunction())
-            .then((options) => {
-                setOptions(options)
-                setLoading(false)
-            }, (error) => { })
+        // setLoading(true)
+        // Promise.resolve(searchFunction())
+        //     .then((options) => {
+        setOptions([
+            { title: "Tel Aviv", value: {} },
+            { title: "Jerusalem", value: {} },
+            { title: "London", value: {} },
+            { title: "Petah Tikva", value: {} },
+            { title: "Moscow", value: {} },
+        ])
+        //         setLoading(false)
+        // }, (error) => { })
     }
 
     const inputRef = useRef<HTMLInputElement>()
@@ -62,12 +68,18 @@ const SearchField: React.FC<Props> = (props) => {
         }
     }
 
-    const handleBlur: React.FocusEventHandler = e => {
+    const handleBlurInner = () => {
+        setFocus(false)
+        setOptions([])
+    }
+
+    const handleBlurOutter: FocusEventHandler = (e) => {
         //@ts-ignore
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-            setFocus(false)
+        if (!e.currentTarget.contains(e.relatedTarget) && !options.length) {
+            handleBlurInner()
         }
     }
+
 
     const handleValueChange = (newValue: SelectOption) => {
         setValue(newValue)
@@ -79,10 +91,14 @@ const SearchField: React.FC<Props> = (props) => {
         if (inFocus) { inputRef.current?.click() }
     }, [inFocus])
 
+    useEffect(() => {
+        if (value) { setOptions([]) }
+    }, [value])
+
     return (
 
         <>
-            <div onClick={handleFocus} onBlur={handleBlur} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
+            <div onClick={handleFocus} onBlur={handleBlurOutter} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
                 {
                     inFocus ?
@@ -99,8 +115,8 @@ const SearchField: React.FC<Props> = (props) => {
                         </IconButton> : <CircularProgress />
                 }
             </div>
-            <ResultPanel options={options} setValue={handleValueChange}/>
-            
+            {options.length ? <ResultPanel options={options} setValue={handleValueChange} clickAwayHandler={handleBlurInner} /> : null}
+
         </>
     )
 }
