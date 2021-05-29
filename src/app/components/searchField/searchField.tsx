@@ -1,6 +1,9 @@
-import { IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Collapse, IconButton, InputBase, List, ListItem, ListItemText, makeStyles, Typography } from "@material-ui/core";
 import { Search } from '@material-ui/icons'
+import { Autocomplete } from "@material-ui/lab";
+import { AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
+import ResultPanel from "./ResultPanel";
 
 const useStyles = makeStyles(theme => ({
     inputWrap: {
@@ -10,46 +13,95 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         transition: 'border-color 300ms ,width 0.5s',
-        // borderColor: theme.palette.text.secondary
         '&:hover': {
             borderColor: theme.palette.info.main,
             cursor: 'text'
         },
     },
-    active: { width: 300 }
+    active: {
+        width: 300
+    },
+    
 }))
 
-const SearchField = (props: any) => {
+
+type SelectOption = {
+    title: string
+    value: any
+}
+
+type Props = {
+    onChange: (text: string) => void
+    searchFunction: () => Promise<SelectOption[]> | SelectOption[]
+}
+
+const SearchField: React.FC<Props> = (props) => {
+    const { searchFunction, onChange } = props
 
     const [inFocus, setFocus] = useState(false)
-    const [value, setValue] = useState("Tel Aviv")
+    const [value, setValue] = useState<SelectOption>({title:"Tel Aviv", value:{}})
+    const [options, setOptions] = useState<SelectOption[]>([])
+    const [loading, setLoading] = useState(false)
+
+    const search = () => {
+        setLoading(true)
+        Promise.resolve(searchFunction())
+            .then((options) => {
+                setOptions(options)
+                setLoading(false)
+            }, (error) => { })
+    }
 
     const inputRef = useRef<HTMLInputElement>()
 
     const classes = useStyles()
 
-    useEffect(() => {
-        if (inFocus) {
-            inputRef.current?.click()
+    const handleFocus: React.MouseEventHandler = (e) => {
+        if (!inFocus) {
+            setFocus(true)
         }
+    }
+
+    const handleBlur: React.FocusEventHandler = e => {
+        //@ts-ignore
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            setFocus(false)
+        }
+    }
+
+    const handleValueChange = (newValue: SelectOption) => {
+        setValue(newValue)
+        setFocus(false)
+        setOptions([])
+    }
+
+    useEffect(() => {
+        if (inFocus) { inputRef.current?.click() }
     }, [inFocus])
 
     return (
-        <div onClick={() => { setFocus(true) }} {...props} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
-            {
-                inFocus ?
-                    <InputBase
-                        ref={inputRef}
-                        onBlur={() => { setFocus(false) }}
-                    /> :
-                    <Typography variant="h4">{value}</Typography>
+        <>
+            <div onClick={handleFocus} onBlur={handleBlur} className={`${classes.inputWrap} ${inFocus && classes.active}`}>
 
-            }
-            <IconButton type="submit" aria-label="search">
-                <Search />
-            </IconButton>
-        </div>
+                {
+                    inFocus ?
+                        < InputBase
+                            ref={inputRef}
+                            onChange={(e) => { onChange(e.target.value) }}
+                        /> : <Typography variant="h4">{value.title}</Typography>
+                }
+                {
+                    !loading ?
+                        <IconButton
+                            onClick={() => { search() }} aria-label="search">
+                            <Search />
+                        </IconButton> : <CircularProgress />
+                }
+            </div>
+            <ResultPanel options={options} setValue={handleValueChange}/>
+            
+        </>
     )
 }
 

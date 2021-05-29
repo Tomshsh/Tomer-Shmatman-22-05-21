@@ -1,7 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {currentWeatherReducer, forecestReducer, favoritesReducer} from './features'
 
 export const store = configureStore({
   reducer: {
+    currentWeather: currentWeatherReducer,
+    forecast: forecestReducer,
+    favorites: favoritesReducer
   },
 });
 
