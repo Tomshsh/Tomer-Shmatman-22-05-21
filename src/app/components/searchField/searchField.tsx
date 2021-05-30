@@ -1,7 +1,5 @@
-import { Button, CircularProgress, Collapse, IconButton, InputBase, List, ListItem, ListItemText, makeStyles, Typography } from "@material-ui/core";
+import { CircularProgress, IconButton, InputBase, makeStyles, Typography } from "@material-ui/core";
 import { Search } from '@material-ui/icons'
-import { Autocomplete } from "@material-ui/lab";
-import { AxiosResponse } from "axios";
 import { FocusEventHandler, MouseEventHandler, useEffect, useRef, useState } from "react";
 import ResultPanel from "./ResultPanel";
 
