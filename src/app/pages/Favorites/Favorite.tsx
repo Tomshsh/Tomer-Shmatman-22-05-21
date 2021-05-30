@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        alignItems: 'end',
+        alignItems: 'flex-end',
 
         '& img': { height: '50%' },
         '& button': { width: 'fit-content' }
